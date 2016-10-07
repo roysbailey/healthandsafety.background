@@ -3,5 +3,5 @@ module.exports = {
   tririgaOSLAPICUri: process.env.TririgaOSLAPICUri,
   pollIntervall: process.env.PollInterval || 5000,
   azureQueueName: process.env.AzureQueueName || 'has-incidents',
-  incidentReportingUri: "http://healthandsafety.herokuapp.com/api/hasincidents"
+  incidentReportingUri: process.env.incidentReportingUri
 };
