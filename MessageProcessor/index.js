@@ -32,7 +32,7 @@ function pollQueue() {
         });
 }
 
-function loadNextMessage(queueSvc, callback) {
+function loadNextMessage(queueSvc) {
     return new Promise( function pr(resolve,reject){
         var messageObject = {
             azureMessage: undefined,
