@@ -80,7 +80,7 @@ function processMessage(message) {
 }
 
 function removeMessage(queueSvc, azureMessage) {
-    queueSvc.deleteMessage(config.azureQueueName, azureMessage.messageId, azureMessage.popReceipt, function(error, response){
+    queueSvc.deleteMessage(config.azureQueueName, azureMessage.messageId, azureMessage.popReceipt, (error, response) => {
       if(!error){
         console.log("Removed message: " + azureMessage.messageId);
       }
