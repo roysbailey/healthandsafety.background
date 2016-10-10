@@ -6,10 +6,17 @@ var config = require("./config");
 
     incidentSubmissionService.PostIncident = (incident, callback) => {
         return new Promise( function pr(resolve,reject) {
+
+            // Convert queue format to BO format 
+            var incidentBO = mapToBO(incident);
+
             var client = new RestClient();
             var args = {
-            data: incident,
-            headers: { "Content-Type": "application/json" }
+            data: incidentBO,
+            headers: { 
+                "Content-Type": "application/json", 
+                "Authorization": config.basicAuthHeaderVal 
+                }
             };
 
             client.post(config.incidentReportingUri, args, (data, response) => {
@@ -24,5 +31,18 @@ var config = require("./config");
                 reject(err);
             });
         });
-    } 
+    }
+
+    function mapToBO(incident) {
+        var bo =
+        {
+        "spi:action": "Activate",
+        "spi:cstIncidentDetails": incident.problemReport,
+        "spi:cstIncidentType": incident.incidentType,
+        "spi:cstIncidentLocation": incident.region,
+        "spi:cstNameOfSubmitter" : incident.firstName + " " + incident.lastName 
+        }
+
+        return bo;
+    }
 })(module.exports);
