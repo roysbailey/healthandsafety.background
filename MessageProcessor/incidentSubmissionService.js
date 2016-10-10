@@ -24,5 +24,5 @@ var config = require("./config");
                 reject(err);
             });
         });
-    }
+    } 
 })(module.exports);

@@ -1,5 +1,5 @@
 {
-  "name": "HealthAndSafetyReporterBackground",
+  "name": "HealthAndSafetyReporterBackgroundProcessor",
   "version": "0.1.0",
   "description": "Health and safety incident processor.",
   "main": "server.js",
