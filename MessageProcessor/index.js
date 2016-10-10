@@ -41,7 +41,7 @@ function loadNextMessage(queueSvc) {
         queueSvc.createQueueIfNotExists(config.azureQueueName, (error, result, response) => {
             if(!error){
                 queueSvc.getMessages(config.azureQueueName, (error, result, response) => {
-                    if(!error){
+                    if(!error && result.length > 0){
                         // Azure storage queues excpect base64 encoding (specifically the tools like storage explorer).
                         // http://www.codingdefined.com/2015/07/how-to-encode-string-to-base64-in-nodejs.html
                         messageObject.azureMessage = result[0]; 
@@ -49,7 +49,8 @@ function loadNextMessage(queueSvc) {
                         var messageTextAscii = buffer.toString('ascii');
                         messageObject.incidentReport = JSON.parse(messageTextAscii);
                         resolve(messageObject);
-                    } else {reject(error);}
+                    } else if (result.length === 0) {reject({"error": "No message on queue"});} 
+                    else {reject(error);}
                 });
             } else {reject(error);}
         });
@@ -79,11 +80,11 @@ function processMessage(message) {
 }
 
 function removeMessage(queueSvc, azureMessage) {
-    // queueSvc.deleteMessage(config.azureQueueName, azureMessage.messageId, azureMessage.popReceipt, function(error, response){
-    //   if(!error){
-    //     console.log("Removed message: " + azureMessage.messageId);
-    //   }
-    // });
+    queueSvc.deleteMessage(config.azureQueueName, azureMessage.messageId, azureMessage.popReceipt, function(error, response){
+      if(!error){
+        console.log("Removed message: " + azureMessage.messageId);
+      }
+    });
 
     console.log("Remove message: " + azureMessage.messageId);
 }
