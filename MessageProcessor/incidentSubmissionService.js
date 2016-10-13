@@ -20,7 +20,7 @@ var config = require("./config");
             };
 
             client.post(config.incidentReportingUri, args, (data, response) => {
-                console.log("Body from OSLC: " + data);
+                console.log("Body from OSLC: " + JSON.stringify(data));
                 console.log("Created incident: " + incident.incidentID);                
                 // parsed response body as js object 
 
