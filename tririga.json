@@ -1,0 +1,21 @@
+{
+  "prefixes": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "spi": "http://jazz.net/ns/ism/smarter_physical_infrastructure#",
+    "oslc": "http://open-services.net/ns/core#"
+  },
+  "spi:action": "http://localhost/oslc/system/action/cstHealthAndSafetyIncident/14180070",
+  "spi:CreatedDateTime": "2016-09-29T08:42:32.898-07:00",
+  "spi:cstIncidentDetails": "Broke my sanity",
+  "rdf:type": [
+    {
+      "rdf:resource": "http://jazz.net/ns/ism/smarter_physical_infrastructure#HealthAndSafetyIncident"
+    }
+  ],
+  "spi:cstIncidentType": "Hit the wall",
+  "spi:ControlNumber": "1000000",
+  "spi:cstNameOfSubmitter": null,
+  "rdf:about": "http://localhost/oslc/so/cstHealthAndSafetyIncident/14180070",
+  "spi:cstIncidentLocation": "France"
+}

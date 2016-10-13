@@ -17,8 +17,7 @@ function pollQueue() {
 
     var queueSvc = azureStorage.createQueueService(config.sourceQueueConnectionString);
     loadNextMessage(queueSvc).
-    then(
-        function fulfilled(message){
+    then(message => {
             // handle `contents` success
             return processMessage(message);
         })
