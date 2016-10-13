@@ -27,7 +27,7 @@ function pollQueue() {
             removeMessage(queueSvc, message.azureMessage);
         },
         function rejected(error){
-            console.log("Error: " + error);
+            console.log("Error: " + JSON.stringify(error));
         });
 }
 
