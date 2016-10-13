@@ -47,6 +47,7 @@ function loadNextMessage(queueSvc) {
                         var buffer = new Buffer(messageObject.azureMessage.messageText, 'base64');
                         var messageTextAscii = buffer.toString('ascii');
                         messageObject.incidentReport = JSON.parse(messageTextAscii);
+                        console.log("Loaded incident from queue to process: " + messageTextAscii);
                         resolve(messageObject);
                     } else if (result.length === 0) {reject({"error": "No message on queue"});} 
                     else {reject(error);}
