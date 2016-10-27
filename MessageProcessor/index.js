@@ -1,15 +1,42 @@
-var config = require("./config");
-var incidentSubmissionService = require("./incidentSubmissionService");
+var config = require("../config/config");
+var incidentSubmissionService = require("../services/incidentSubmissionService");
+var incidentQueryService = require("../services/incidentQueryService");
+var incidentReadViewRepo = require("../services/incidentReadViewRepo");
 var azureStorage = require('azure-storage');
 
 var counter=0;
 
 module.exports = {
   init: () => {
+    // Look for new incidents from the web ui
     pollQueue();
-    setInterval(pollQueue, config.pollIntervall)
+    setInterval(pollQueue, config.pollIntervall);
+
+    // Look for changes to the tririga system.
+    PollDomainEvents();
+    setInterval(PollDomainEvents, config.pollIntervalReadView);
   }
 };
+
+function PollDomainEvents() {
+    var d = new Date();
+    var nextPollDate = d.toISOString();
+    incidentReadViewRepo.getLastPollDate()
+    .then(pollDateTime => {
+        return incidentQueryService.GetIncidentsAfterDateFeed(pollDateTime);
+    })
+    .then(changedIncidents => {
+        console.log("Incidents: " + JSON.stringify(changedIncidents));
+        return incidentReadViewRepo.UpdateReadView(changedIncidents);
+    })
+    .then(outcome => {
+        console.log("outcome: " + outcome);
+        return incidentReadViewRepo.saveLastPollDate(nextPollDate);
+    })
+    .then( () => {
+        console.log("done poll");
+    });
+}
 
 function pollQueue() {
     counter++;
