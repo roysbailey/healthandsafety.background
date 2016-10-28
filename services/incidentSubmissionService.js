@@ -33,13 +33,17 @@ var config = require("../config/config");
     }
 
     function mapToBO(incident) {
+
         var bo =
         {
-        "spi:action": "Activate",
-        "spi:cstIncidentDetails": incident.problemReport,
-        "spi:cstIncidentType": incident.incidentType,
-        "spi:cstIncidentLocation": incident.region,
-        "spi:cstNameOfSubmitter" : incident.firstName + " " + incident.lastName 
+            "spi:action": "Activate",
+            "spi:cstRegion": incident.Region,
+            "spi:cstIncidentDate": incident.incidentDate, 
+            "spi:cstCasualty": incident.casualty,
+            "spi:cstIncidentClass": incident.incidentClass,
+            "spi:cstIncidentSubmitter": incident.nameOfSubmitter,
+            "spi:cstIncidentReport": incident.problemReport,
+            "spi:cstIncidentStatus": incident.status
         }
 
         return bo;
