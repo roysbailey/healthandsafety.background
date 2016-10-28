@@ -23,6 +23,7 @@ function PollDomainEvents() {
     var nextPollDate = d.toISOString();
     incidentReadViewRepo.getLastPollDate()
     .then(pollDateTime => {
+        //pollDateTime = "2016-10-01T05:51:42.930-04:00";
         return incidentQueryService.GetIncidentsAfterDateFeed(pollDateTime);
     })
     .then(changedIncidents => {

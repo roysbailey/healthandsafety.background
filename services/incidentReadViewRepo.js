@@ -7,23 +7,23 @@
     });
     const dynamodb = new AWS.DynamoDB();
 
-    incidentReadViewRepo.UpdateReadView = (triIncidents) => {
+    incidentReadViewRepo.UpdateReadView = (hasIncidents) => {
         return new Promise( function pr(resolve,reject) {
-            console.log("Need to save: " + triIncidents.length + " incidents");
+            console.log("Need to save: " + hasIncidents.length + " incidents");
             var completedSaves = 0; 
-            if (triIncidents.length > 0) {
-                triIncidents.forEach(triIncident => {
+            if (hasIncidents.length > 0) {
+                hasIncidents.forEach(hasIncident => {
                     // Convert BO format to model format 
-                    var incidentModel = mapToModel(triIncident);
-                    putItem("HealthAndSafetyIncidents", incidentModel, (error, data) => {
+                    //var incidentModel = mapToModel(hasIncident);
+                    putItem("HealthAndSafetyIncidents", hasIncident, (error, data) => {
                         if (error) {
                             console.log("Failed to save incident, aborting: " + error);
                             reject(error)
                         }
                         else {
                             completedSaves++;
-                            console.log("Incident save: " + completedSaves + " of " + triIncidents.length + " incidents");
-                            if (triIncidents.length == completedSaves) {
+                            console.log("Incident save: " + completedSaves + " of " + hasIncidents.length + " incidents");
+                            if (hasIncidents.length == completedSaves) {
                                 console.log("Saved all incidents, so completing");
                                 resolve("Saved: " + completedSaves + " incidents to the read model");
                             }

@@ -1,4 +1,5 @@
 var config = require("../config/config");
+IncidentModel = require('../models/IncidentModel');
 
 (function (incidentQueryService) {
 
@@ -56,26 +57,20 @@ var config = require("../config/config");
 
             client.get(incidentUri, args, (data, response) => {
                 console.log("Retrived incident: " + data);
-                var incidentDTO = mapBOToDTO(data);
-                resolve(incidentDTO);
+                var incidentModel = mapBOToModel(data);
+                resolve(incidentModel);
             });
         });
 
     }
 
-    function mapBOToDTO(incidentBO) {
-        var dto =
-        {
-        "ID": incidentBO["spi:ControlNumber"],
-        "problemReport": incidentBO["spi:cstIncidentDetails"],
-        "incidentType": incidentBO["spi:cstIncidentType"],
-        "region": incidentBO["spi:cstIncidentLocation"],
-        "name":  incidentBO["spi:cstNameOfSubmitter"], 
-        "createdDateTime": convertDateToEngland(incidentBO["spi:CreatedDateTime"]),
-        "updatedDateTime": convertDateToEngland(incidentBO["spi:triModifiedSY"])
-        }
+    function mapBOToModel(incidentBO) {
 
-        return dto;
+        var incidentModel = new IncidentModel(incidentBO["spi:ControlNumber"], incidentBO["spi:cstRegion"], 
+            incidentBO["spi:cstIncidentDate"], incidentBO["spi:cstCasualty"], incidentBO["spi:cstIncidentClass"], incidentBO["spi:cstIncidentSubmitter"], 
+            incidentBO["spi:cstIncidentReport"], incidentBO["spi:cstIncidentStatus"], incidentBO["spi:CreatedDateTime"], incidentBO["spi:triModifiedSY"]);
+
+        return incidentModel;
     }
 
     function standardGetHeader() {
