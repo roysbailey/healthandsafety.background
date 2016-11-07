@@ -6,20 +6,29 @@ IncidentModel = require('../models/IncidentModel');
     var RestClient = require('node-rest-client').Client;
 
     incidentQueryService.GetIncidentsAfterDateFeed = (lastPollDateTime) => {
+        var incidentQueryEventsUri = config.incidentQueryEventsUri.replace("{0}", lastPollDateTime);
+        return executeIncidentQuery(incidentQueryEventsUri);
+    }
+
+    incidentQueryService.GetIncidentByControlNumber = (controlNumber) => {
+        var incidentQueryUri = config.incidentQueryExistingUri.replace("{0}", controlNumber);
+        return executeIncidentQuery(incidentQueryUri);
+    }
+
+
+    function executeIncidentQuery (queryUri) {
         return new Promise( function pr(resolve,reject) {
 
-            // Convert queue format to BO format 
             var results = [];
 
             var client = new RestClient();
             var args = {
-            headers: standardGetHeader()
+                headers: standardGetHeader()
             };
+            console.log("Query Uri: " + queryUri + " header: " + args.headers.Authorization);
 
-            var incidentQueryEventsUri = config.incidentQueryEventsUri.replace("{0}", lastPollDateTime);
-            console.log("Query Uri: " + incidentQueryEventsUri) + " header: " + args.headers.Authorization; 
-            client.get(incidentQueryEventsUri, args, (data, response) => {
-                console.log("RAW BODY response from query by region: " + JSON.stringify(data));
+            client.get(queryUri, args, (data, response) => {
+                console.log("RAW BODY response from query: " + JSON.stringify(data));
                 results = data['rdfs:member'];
                 console.log("Retrived incidents: " + results);                
 
@@ -44,7 +53,7 @@ IncidentModel = require('../models/IncidentModel');
                 reject(err);
             });
         });
-    }
+    }    
 
     function loadIndividualIncident(incidentUri) {
         return new Promise( function pr(resolve,reject) {
@@ -58,6 +67,7 @@ IncidentModel = require('../models/IncidentModel');
             client.get(incidentUri, args, (data, response) => {
                 console.log("Retrived incident: " + data);
                 var incidentModel = mapBOToModel(data);
+                incidentModel.__url = incidentUri;
                 resolve(incidentModel);
             });
         });
