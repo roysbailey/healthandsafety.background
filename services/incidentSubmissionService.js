@@ -10,6 +10,7 @@ var incidentQueryService = require("./incidentQueryService");
 
             // We may be creating a new incident, or updating an existing one.
             // We need to check if we can find a match to work out whether to update or insert.
+            console.log("About to post incident to Tririga, check if present: " + incident.IncidentID);
 
             incidentQueryService.GetIncidentByControlNumber(incident.IncidentID)
                 .then((data) => {
