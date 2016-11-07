@@ -63,7 +63,6 @@ var incidentQueryService = require("./incidentQueryService");
                 }
             };
 
-            //var incidentUpdateUri = config.incidentUpdateUri.replace("{0}", incidentID);
             var incidentUpdateUri = updateUrl;
 
             client.put(incidentUpdateUri, args, (data, response) => {
