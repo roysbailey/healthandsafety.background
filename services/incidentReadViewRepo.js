@@ -5,7 +5,7 @@
     AWS.config.update({
         region: "eu-west-1"
     });
-    const dynamodb = new AWS.DynamoDB();
+    const dynamodb = new AWS.DynamoDB({correctClockSkew: true});
 
     incidentReadViewRepo.UpdateReadView = (hasIncidents) => {
         return new Promise( function pr(resolve,reject) {
