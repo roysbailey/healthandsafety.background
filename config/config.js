@@ -5,7 +5,6 @@
   config.incidentReportingUri = process.env.incidentReportingUri;
   config.incidentQueryEventsUri = process.env.incidentQueryEventsUri;
   config.incidentQueryExistingUri = process.env.incidentQueryExistingUri;
-  config.incidentUpdateUri = process.env.incidentUpdateUri;
   config.incidentServiceHostname = process.env.incidentServiceHostname;
   config.basicAuthHeaderVal = process.env.BasicAuthHeaderVal;
   config.pollIntervalReadView = process.env.PollIntervalReadView;

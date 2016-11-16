@@ -90,7 +90,7 @@ function processMessage(message) {
         incidentReport = message.incidentReport;
         if (incidentReport) {
             console.log("Process new message");
-            console.log("incidentID: " + incidentReport.incidentID);
+            console.log("incidentID: " + incidentReport.IncidentID);
 
             incidentSubmissionService.PostIncident(incidentReport)
             .then(

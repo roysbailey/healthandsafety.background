@@ -9,14 +9,17 @@ var incidentQueryService = require("./incidentQueryService");
         return new Promise( function pr(resolve,reject) {
 
             // We may be creating a new incident, or updating an existing one.
-            // We need to check if we can find a match to work this out.
+            // We need to check if we can find a match to work out whether to update or insert.
+            console.log("About to post incident to Tririga, check if present: " + incident.IncidentID);
 
             incidentQueryService.GetIncidentByControlNumber(incident.IncidentID)
                 .then((data) => {
                     if (data.length) {
+                        console.log("Need to update: " + incident.IncidentID);
                         updateExistingIncident(incident, data[0].__url)
                             .then( () => resolve());
                     } else {
+                        console.log("Need to add: " + incident.IncidentID);
                         addNewIncident(incident)
                             .then( () => resolve());
                     }
@@ -63,7 +66,6 @@ var incidentQueryService = require("./incidentQueryService");
                 }
             };
 
-            //var incidentUpdateUri = config.incidentUpdateUri.replace("{0}", incidentID);
             var incidentUpdateUri = updateUrl;
 
             client.put(incidentUpdateUri, args, (data, response) => {
