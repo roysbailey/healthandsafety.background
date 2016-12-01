@@ -2,7 +2,7 @@ var config = require("../config/config");
 var incidentQueueRepo = require("../services/incidentQueueRepoFactory").instance;
 var incidentSubmissionService = require("../services/incidentSubmissionService");
 var incidentQueryService = require("../services/incidentQueryService");
-var incidentReadViewRepo = require("../services/incidentReadViewRepo");
+var incidentReadViewRepo = require("../services/incidentReadViewRepoFactory").instance;
 
 var counter=0;
 
@@ -22,21 +22,21 @@ function PollDomainEvents() {
     var d = new Date();
     var nextPollDate = d.toISOString();
     incidentReadViewRepo.getLastPollDate()
-    .then(pollDateTime => {
-        //pollDateTime = "2016-10-01T05:51:42.930-04:00";
-        return incidentQueryService.GetIncidentsAfterDateFeed(pollDateTime);
-    })
-    .then(changedIncidents => {
-        console.log("Incidents: " + JSON.stringify(changedIncidents));
-        return incidentReadViewRepo.UpdateReadView(changedIncidents);
-    })
-    .then(outcome => {
-        console.log("outcome: " + outcome);
-        return incidentReadViewRepo.saveLastPollDate(nextPollDate);
-    })
-    .then( () => {
-        console.log("done poll");
-    });
+        .then(pollDateTime => {
+            //pollDateTime = "2016-11-10T05:51:42.930-04:00";
+            return incidentQueryService.GetIncidentsAfterDateFeed(pollDateTime);
+        })
+        .then(changedIncidents => {
+            console.log("Incidents: " + JSON.stringify(changedIncidents));
+            return incidentReadViewRepo.UpdateReadView(changedIncidents);
+        })
+        .then(outcome => {
+            console.log("outcome: " + outcome);
+            return incidentReadViewRepo.saveLastPollDate(nextPollDate);
+        })
+        .then( () => {
+            console.log("done poll");
+        });
 }
 
 function pollQueue() {

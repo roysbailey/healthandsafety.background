@@ -1,10 +1,11 @@
 var pgp = require('pg-promise')();
+var config = require("../config/config");
 
 var cn = {
-    host: 'localhost', // 'localhost' is the default;
-    database: 'test',
+    host: config.postgresHost, // 'localhost' is the default;
+    database: 'has',
     user: 'postgres',
-    password: 'password'
+    password: config.postgresPassword
 };
 
 var db = pgp(cn);
