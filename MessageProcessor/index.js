@@ -1,8 +1,8 @@
 var config = require("../config/config");
+var incidentQueueRepo = require("../services/incidentQueueRepoFactory").instance;
 var incidentSubmissionService = require("../services/incidentSubmissionService");
 var incidentQueryService = require("../services/incidentQueryService");
-var incidentReadViewRepo = require("../services/incidentReadViewRepo");
-var azureStorage = require('azure-storage');
+var incidentReadViewRepo = require("../services/incidentReadViewRepoFactory").instance;
 
 var counter=0;
 
@@ -22,29 +22,28 @@ function PollDomainEvents() {
     var d = new Date();
     var nextPollDate = d.toISOString();
     incidentReadViewRepo.getLastPollDate()
-    .then(pollDateTime => {
-        //pollDateTime = "2016-10-01T05:51:42.930-04:00";
-        return incidentQueryService.GetIncidentsAfterDateFeed(pollDateTime);
-    })
-    .then(changedIncidents => {
-        console.log("Incidents: " + JSON.stringify(changedIncidents));
-        return incidentReadViewRepo.UpdateReadView(changedIncidents);
-    })
-    .then(outcome => {
-        console.log("outcome: " + outcome);
-        return incidentReadViewRepo.saveLastPollDate(nextPollDate);
-    })
-    .then( () => {
-        console.log("done poll");
-    });
+        .then(pollDateTime => {
+            //pollDateTime = "2016-11-10T05:51:42.930-04:00";
+            return incidentQueryService.GetIncidentsAfterDateFeed(pollDateTime);
+        })
+        .then(changedIncidents => {
+            console.log("Incidents: " + JSON.stringify(changedIncidents));
+            return incidentReadViewRepo.UpdateReadView(changedIncidents);
+        })
+        .then(outcome => {
+            console.log("outcome: " + outcome);
+            return incidentReadViewRepo.saveLastPollDate(nextPollDate);
+        })
+        .then( () => {
+            console.log("done poll");
+        });
 }
 
 function pollQueue() {
     counter++;
     console.log("Current counter: " + counter);
 
-    var queueSvc = azureStorage.createQueueService(config.sourceQueueConnectionString);
-    loadNextMessage(queueSvc).
+    incidentQueueRepo.loadNextMessage().
     then(message => {
             // handle `contents` success
             return processMessage(message);
@@ -52,38 +51,14 @@ function pollQueue() {
     .then(
         function fulfilled (message) {
             // handle `contents` success
-            removeMessage(queueSvc, message.azureMessage);
+            incidentQueueRepo.removeMessage(message.messageToken);
         },
         function rejected(error){
             console.log("Error: " + JSON.stringify(error));
         });
 }
 
-function loadNextMessage(queueSvc) {
-    return new Promise( function pr(resolve,reject){
-        var messageObject = {
-            azureMessage: undefined,
-            incidentReport: undefined
-        }; 
-        queueSvc.createQueueIfNotExists(config.azureQueueName, (error, result, response) => {
-            if(!error){
-                queueSvc.getMessages(config.azureQueueName, (error, result, response) => {
-                    if(!error && result.length > 0){
-                        // Azure storage queues excpect base64 encoding (specifically the tools like storage explorer).
-                        // http://www.codingdefined.com/2015/07/how-to-encode-string-to-base64-in-nodejs.html
-                        messageObject.azureMessage = result[0]; 
-                        var buffer = new Buffer(messageObject.azureMessage.messageText, 'base64');
-                        var messageTextAscii = buffer.toString('ascii');
-                        messageObject.incidentReport = JSON.parse(messageTextAscii);
-                        console.log("Loaded incident from queue to process: " + messageTextAscii);
-                        resolve(messageObject);
-                    } else if (result.length === 0) {reject({"error": "No message on queue"});} 
-                    else {reject(error);}
-                });
-            } else {reject(error);}
-        });
-    });
-}
+
 
 function processMessage(message) {
     return new Promise( function pr(resolve,reject) {
@@ -91,6 +66,11 @@ function processMessage(message) {
         if (incidentReport) {
             console.log("Process new message");
             console.log("incidentID: " + incidentReport.IncidentID);
+
+
+
+
+            resolve(message);
 
             incidentSubmissionService.PostIncident(incidentReport)
             .then(
@@ -107,12 +87,3 @@ function processMessage(message) {
     });
 }
 
-function removeMessage(queueSvc, azureMessage) {
-    queueSvc.deleteMessage(config.azureQueueName, azureMessage.messageId, azureMessage.popReceipt, (error, response) => {
-      if(!error){
-        console.log("Removed message: " + azureMessage.messageId);
-      }
-    });
-
-    console.log("Remove message: " + azureMessage.messageId);
-}

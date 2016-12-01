@@ -1,5 +1,5 @@
 #Build the container based on this docker file.
-# docker build -f dev.dockerfile --tag monsteruk/has-webworker ../
+# docker build -f prod.dockerfile --tag monsteruk/has-webworker ../
 
 #Run in default network
 # docker run -d --env-file env/dev.webworker.env -v C:\data\git\DIOHandS.Background:/var/www -w /var/www  --name has-webworker  monsteruk/has-webworker
@@ -9,6 +9,8 @@
 #Run in an isolated network - just for has apps.
 # docker network create --driver bridge has-isolated_network
 # docker run -d --net=has-isolated_network --env-file env/dev.webworker.env -v C:\data\git\DIOHandS.Background:/var/www -w /var/www --name has-webworker  monsteruk/has-webworker
+# Run prod version (with no volume) in interactive mode
+# docker run -it --net=has-isolated_network --env-file env/dev.webworker.env --name has-webworker  monsteruk/has-webworker
 
 FROM node:latest
 
@@ -40,3 +42,5 @@ ENTRYPOINT ["pm2", "start", "server.js","--name","has-worker","--log","/var/log/
 # AzureProcessingQueueConnection=DefaultEndpointsProtocol=https;AccountName={YOUR_STORAGE_ACCOUNT_NAME};AccountKey={YOUR_KEY}
 # AWS_ACCESS_KEY_ID={YOUR_AWS_KEY}
 # AWS_SECRET_ACCESS_KEY={YOUR_AWS_SECRET_KEY}
+# postgresHost=has-postgres
+# postgresPassword=password

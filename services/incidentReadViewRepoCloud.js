@@ -1,5 +1,5 @@
 
-(function (incidentReadViewRepo) {
+(function (incidentReadViewRepoCloud) {
 
     var AWS = require("aws-sdk");
     AWS.config.update({
@@ -7,7 +7,7 @@
     });
     const dynamodb = new AWS.DynamoDB({correctClockSkew: true});
 
-    incidentReadViewRepo.UpdateReadView = (hasIncidents) => {
+    incidentReadViewRepoCloud.UpdateReadView = (hasIncidents) => {
         return new Promise( function pr(resolve,reject) {
             console.log("Need to save: " + hasIncidents.length + " incidents");
             var completedSaves = 0; 
@@ -36,7 +36,7 @@
         });
     }
 
-    incidentReadViewRepo.getLastPollDate = () => {
+    incidentReadViewRepoCloud.getLastPollDate = () => {
         return new Promise( function pr(resolve,reject) {
             getItem("HealthAndSafetyBookMark", "System", "HealthAndSafety", (error, data) => {
                 if (error)
@@ -48,7 +48,7 @@
         });
     }
 
-    incidentReadViewRepo.saveLastPollDate = (pollDateTime) => {
+    incidentReadViewRepoCloud.saveLastPollDate = (pollDateTime) => {
         return new Promise( function pr(resolve,reject) {
             var bookMarkModel = {
                 System: "HealthAndSafety",

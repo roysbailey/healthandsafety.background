@@ -8,4 +8,6 @@
   config.incidentServiceHostname = process.env.incidentServiceHostname;
   config.basicAuthHeaderVal = process.env.BasicAuthHeaderVal;
   config.pollIntervalReadView = process.env.PollIntervalReadView;
+  config.postgresHost = process.env.postgresHost || 'localhost';
+  config.postgresPassword = process.env.postgresPassword || 'password';
 })(module.exports);
