@@ -1,9 +1,10 @@
+var config = require("../config/config");
 var incidentQueueRepoCloud = require("./incidentQueueRepoCloud");
 var incidentQueueRepoLocal = require("./incidentQueueRepoLocal");
 
 (function (incidentQueueRepoFactory) {
 
-    incidentQueueRepoFactory.instance = process.env.HOST_MODEL === 'Azure' 
+    incidentQueueRepoFactory.instance = config.hostModel === 'Cloud' 
         ? incidentQueueRepoCloud 
         : incidentQueueRepoLocal;
 

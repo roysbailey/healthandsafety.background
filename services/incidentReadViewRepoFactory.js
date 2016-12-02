@@ -1,9 +1,10 @@
+var config = require("../config/config");
 var incidentReadViewRepoCloud = require("./incidentReadViewRepoCloud");
 var incidentReadViewRepoLocal = require("./incidentReadViewRepoLocal");
 
 (function (incidentReadViewRepoFactory) {
 
-    incidentReadViewRepoFactory.instance = process.env.HOST_MODEL === 'Azure' 
+    incidentReadViewRepoFactory.instance = config.hostModel === 'Cloud' 
         ? incidentReadViewRepoCloud 
         : incidentReadViewRepoLocal;
 
